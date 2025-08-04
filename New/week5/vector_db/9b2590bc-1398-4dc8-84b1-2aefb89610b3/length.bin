@@ -1,0 +1,809 @@
+erseContinueResponse(BaseSchema):
+    """
+    Response to `reverseContinue` request. This is just an acknowledgement, so no body field is
+    required.
+
+    Note: automatically generated code. Do not edit manually.
+    """
+
+    __props__ = {
+        "seq": {
+            "type": "integer",
+            "description": "Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.",
+        },
+        "type": {"type": "string", "enum": ["response"]},
+        "request_seq": {"type": "integer", "description": "Sequence number of the corresponding request."},
+        "success": {
+            "type": "boolean",
+            "description": "Outcome of the request.\nIf True, the request was successful and the `body` attribute may contain the result of the request.\nIf the value is false, the attribute `message` contains the error in short form and the `body` may contain additional information (see `ErrorResponse.body.error`).",
+        },
+        "command": {"type": "string", "description": "The command requested."},
+        "message": {
+            "type": "string",
+            "description": "Contains the raw error in short form if `success` is false.\nThis raw error might be interpreted by the client and is not shown in the UI.\nSome predefined values exist.",
+            "_enum": ["cancelled", "notStopped"],
+            "enumDescriptions": ["the request was cancelled.", "the request may be retried once the adapter is in a 'stopped' state."],
+        },
+        "body": {
+            "type": ["array", "boolean", "integer", "null", "number", "object", "string"],
+            "description": "Contains request result if success is True and error details if success is false.",
+        },
+    }
+    __refs__ = set()
+
+    __slots__ = list(__props__.keys()) + ["kwargs"]
+
+    def __init__(self, request_seq, success, command, seq=-1, message=None, body=None, update_ids_from_dap=False, **kwargs):  # noqa (update_ids_from_dap may be unused)
+        """
+        :param string type:
+        :param integer request_seq: Sequence number of the corresponding request.
+        :param boolean success: Outcome of the request.
+        If true, the request was successful and the `body` attribute may contain the result of the request.
+        If the value is false, the attribute `message` contains the error in short form and the `body` may contain additional information (see `ErrorResponse.body.error`).
+        :param string command: The command requested.
+        :param integer seq: Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.
+        :param string message: Contains the raw error in short form if `success` is false.
+        This raw error might be interpreted by the client and is not shown in the UI.
+        Some predefined values exist.
+        :param ['array', 'boolean', 'integer', 'null', 'number', 'object', 'string'] body: Contains request result if success is true and error details if success is false.
+        """
+        self.type = "response"
+        self.request_seq = request_seq
+        self.success = success
+        self.command = command
+        self.seq = seq
+        self.message = message
+        self.body = body
+        self.kwargs = kwargs
+
+    def to_dict(self, update_ids_to_dap=False):  # noqa (update_ids_to_dap may be unused)
+        type = self.type  # noqa (assign to builtin)
+        request_seq = self.request_seq
+        success = self.success
+        command = self.command
+        seq = self.seq
+        message = self.message
+        body = self.body
+        dct = {
+            "type": type,
+            "request_seq": request_seq,
+            "success": success,
+            "command": command,
+            "seq": seq,
+        }
+        if message is not None:
+            dct["message"] = message
+        if body is not None:
+            dct["body"] = body
+        dct.update(self.kwargs)
+        return dct
+
+
+@register_request("restartFrame")
+@register
+class RestartFrameRequest(BaseSchema):
+    """
+    The request restarts execution of the specified stack frame.
+
+    The debug adapter first sends the response and then a `stopped` event (with reason `restart`) after
+    the restart has completed.
+
+    Clients should only call this request if the corresponding capability `supportsRestartFrame` is
+    true.
+
+    Note: automatically generated code. Do not edit manually.
+    """
+
+    __props__ = {
+        "seq": {
+            "type": "integer",
+            "description": "Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.",
+        },
+        "type": {"type": "string", "enum": ["request"]},
+        "command": {"type": "string", "enum": ["restartFrame"]},
+        "arguments": {"type": "RestartFrameArguments"},
+    }
+    __refs__ = set(["arguments"])
+
+    __slots__ = list(__props__.keys()) + ["kwargs"]
+
+    def __init__(self, arguments, seq=-1, update_ids_from_dap=False, **kwargs):  # noqa (update_ids_from_dap may be unused)
+        """
+        :param string type:
+        :param string command:
+        :param RestartFrameArguments arguments:
+        :param integer seq: Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.
+        """
+        self.type = "request"
+        self.command = "restartFrame"
+        if arguments is None:
+            self.arguments = RestartFrameArguments()
+        else:
+            self.arguments = (
+                RestartFrameArguments(update_ids_from_dap=update_ids_from_dap, **arguments)
+                if arguments.__class__ != RestartFrameArguments
+                else arguments
+            )
+        self.seq = seq
+        self.kwargs = kwargs
+
+    def to_dict(self, update_ids_to_dap=False):  # noqa (update_ids_to_dap may be unused)
+        type = self.type  # noqa (assign to builtin)
+        command = self.command
+        arguments = self.arguments
+        seq = self.seq
+        dct = {
+            "type": type,
+            "command": command,
+            "arguments": arguments.to_dict(update_ids_to_dap=update_ids_to_dap),
+            "seq": seq,
+        }
+        dct.update(self.kwargs)
+        return dct
+
+
+@register
+class RestartFrameArguments(BaseSchema):
+    """
+    Arguments for `restartFrame` request.
+
+    Note: automatically generated code. Do not edit manually.
+    """
+
+    __props__ = {
+        "frameId": {
+            "type": "integer",
+            "description": "Restart the stack frame identified by `frameId`. The `frameId` must have been obtained in the current suspended state. See 'Lifetime of Object References' in the Overview section for details.",
+        }
+    }
+    __refs__ = set()
+
+    __slots__ = list(__props__.keys()) + ["kwargs"]
+
+    def __init__(self, frameId, update_ids_from_dap=False, **kwargs):  # noqa (update_ids_from_dap may be unused)
+        """
+        :param integer frameId: Restart the stack frame identified by `frameId`. The `frameId` must have been obtained in the current suspended state. See 'Lifetime of Object References' in the Overview section for details.
+        """
+        self.frameId = frameId
+        if update_ids_from_dap:
+            self.frameId = self._translate_id_from_dap(self.frameId)
+        self.kwargs = kwargs
+
+    @classmethod
+    def update_dict_ids_from_dap(cls, dct):
+        if "frameId" in dct:
+            dct["frameId"] = cls._translate_id_from_dap(dct["frameId"])
+        return dct
+
+    def to_dict(self, update_ids_to_dap=False):  # noqa (update_ids_to_dap may be unused)
+        frameId = self.frameId
+        if update_ids_to_dap:
+            if frameId is not None:
+                frameId = self._translate_id_to_dap(frameId)
+        dct = {
+            "frameId": frameId,
+        }
+        dct.update(self.kwargs)
+        return dct
+
+    @classmethod
+    def update_dict_ids_to_dap(cls, dct):
+        if "frameId" in dct:
+            dct["frameId"] = cls._translate_id_to_dap(dct["frameId"])
+        return dct
+
+
+@register_response("restartFrame")
+@register
+class RestartFrameResponse(BaseSchema):
+    """
+    Response to `restartFrame` request. This is just an acknowledgement, so no body field is required.
+
+    Note: automatically generated code. Do not edit manually.
+    """
+
+    __props__ = {
+        "seq": {
+            "type": "integer",
+            "description": "Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.",
+        },
+        "type": {"type": "string", "enum": ["response"]},
+        "request_seq": {"type": "integer", "description": "Sequence number of the corresponding request."},
+        "success": {
+            "type": "boolean",
+            "description": "Outcome of the request.\nIf True, the request was successful and the `body` attribute may contain the result of the request.\nIf the value is false, the attribute `message` contains the error in short form and the `body` may contain additional information (see `ErrorResponse.body.error`).",
+        },
+        "command": {"type": "string", "description": "The command requested."},
+        "message": {
+            "type": "string",
+            "description": "Contains the raw error in short form if `success` is false.\nThis raw error might be interpreted by the client and is not shown in the UI.\nSome predefined values exist.",
+            "_enum": ["cancelled", "notStopped"],
+            "enumDescriptions": ["the request was cancelled.", "the request may be retried once the adapter is in a 'stopped' state."],
+        },
+        "body": {
+            "type": ["array", "boolean", "integer", "null", "number", "object", "string"],
+            "description": "Contains request result if success is True and error details if success is false.",
+        },
+    }
+    __refs__ = set()
+
+    __slots__ = list(__props__.keys()) + ["kwargs"]
+
+    def __init__(self, request_seq, success, command, seq=-1, message=None, body=None, update_ids_from_dap=False, **kwargs):  # noqa (update_ids_from_dap may be unused)
+        """
+        :param string type:
+        :param integer request_seq: Sequence number of the corresponding request.
+        :param boolean success: Outcome of the request.
+        If true, the request was successful and the `body` attribute may contain the result of the request.
+        If the value is false, the attribute `message` contains the error in short form and the `body` may contain additional information (see `ErrorResponse.body.error`).
+        :param string command: The command requested.
+        :param integer seq: Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.
+        :param string message: Contains the raw error in short form if `success` is false.
+        This raw error might be interpreted by the client and is not shown in the UI.
+        Some predefined values exist.
+        :param ['array', 'boolean', 'integer', 'null', 'number', 'object', 'string'] body: Contains request result if success is true and error details if success is false.
+        """
+        self.type = "response"
+        self.request_seq = request_seq
+        self.success = success
+        self.command = command
+        self.seq = seq
+        self.message = message
+        self.body = body
+        self.kwargs = kwargs
+
+    def to_dict(self, update_ids_to_dap=False):  # noqa (update_ids_to_dap may be unused)
+        type = self.type  # noqa (assign to builtin)
+        request_seq = self.request_seq
+        success = self.success
+        command = self.command
+        seq = self.seq
+        message = self.message
+        body = self.body
+        dct = {
+            "type": type,
+            "request_seq": request_seq,
+            "success": success,
+            "command": command,
+            "seq": seq,
+        }
+        if message is not None:
+            dct["message"] = message
+        if body is not None:
+            dct["body"] = body
+        dct.update(self.kwargs)
+        return dct
+
+
+@register_request("goto")
+@register
+class GotoRequest(BaseSchema):
+    """
+    The request sets the location where the debuggee will continue to run.
+
+    This makes it possible to skip the execution of code or to execute code again.
+
+    The code between the current location and the goto target is not executed but skipped.
+
+    The debug adapter first sends the response and then a `stopped` event with reason `goto`.
+
+    Clients should only call this request if the corresponding capability `supportsGotoTargetsRequest`
+    is true (because only then goto targets exist that can be passed as arguments).
+
+    Note: automatically generated code. Do not edit manually.
+    """
+
+    __props__ = {
+        "seq": {
+            "type": "integer",
+            "description": "Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.",
+        },
+        "type": {"type": "string", "enum": ["request"]},
+        "command": {"type": "string", "enum": ["goto"]},
+        "arguments": {"type": "GotoArguments"},
+    }
+    __refs__ = set(["arguments"])
+
+    __slots__ = list(__props__.keys()) + ["kwargs"]
+
+    def __init__(self, arguments, seq=-1, update_ids_from_dap=False, **kwargs):  # noqa (update_ids_from_dap may be unused)
+        """
+        :param string type:
+        :param string command:
+        :param GotoArguments arguments:
+        :param integer seq: Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.
+        """
+        self.type = "request"
+        self.command = "goto"
+        if arguments is None:
+            self.arguments = GotoArguments()
+        else:
+            self.arguments = (
+                GotoArguments(update_ids_from_dap=update_ids_from_dap, **arguments) if arguments.__class__ != GotoArguments else arguments
+            )
+        self.seq = seq
+        self.kwargs = kwargs
+
+    def to_dict(self, update_ids_to_dap=False):  # noqa (update_ids_to_dap may be unused)
+        type = self.type  # noqa (assign to builtin)
+        command = self.command
+        arguments = self.arguments
+        seq = self.seq
+        dct = {
+            "type": type,
+            "command": command,
+            "arguments": arguments.to_dict(update_ids_to_dap=update_ids_to_dap),
+            "seq": seq,
+        }
+        dct.update(self.kwargs)
+        return dct
+
+
+@register
+class GotoArguments(BaseSchema):
+    """
+    Arguments for `goto` request.
+
+    Note: automatically generated code. Do not edit manually.
+    """
+
+    __props__ = {
+        "threadId": {"type": "integer", "description": "Set the goto target for this thread."},
+        "targetId": {"type": "integer", "description": "The location where the debuggee will continue to run."},
+    }
+    __refs__ = set()
+
+    __slots__ = list(__props__.keys()) + ["kwargs"]
+
+    def __init__(self, threadId, targetId, update_ids_from_dap=False, **kwargs):  # noqa (update_ids_from_dap may be unused)
+        """
+        :param integer threadId: Set the goto target for this thread.
+        :param integer targetId: The location where the debuggee will continue to run.
+        """
+        self.threadId = threadId
+        self.targetId = targetId
+        if update_ids_from_dap:
+            self.threadId = self._translate_id_from_dap(self.threadId)
+        self.kwargs = kwargs
+
+    @classmethod
+    def update_dict_ids_from_dap(cls, dct):
+        if "threadId" in dct:
+            dct["threadId"] = cls._translate_id_from_dap(dct["threadId"])
+        return dct
+
+    def to_dict(self, update_ids_to_dap=False):  # noqa (update_ids_to_dap may be unused)
+        threadId = self.threadId
+        targetId = self.targetId
+        if update_ids_to_dap:
+            if threadId is not None:
+                threadId = self._translate_id_to_dap(threadId)
+        dct = {
+            "threadId": threadId,
+            "targetId": targetId,
+        }
+        dct.update(self.kwargs)
+        return dct
+
+    @classmethod
+    def update_dict_ids_to_dap(cls, dct):
+        if "threadId" in dct:
+            dct["threadId"] = cls._translate_id_to_dap(dct["threadId"])
+        return dct
+
+
+@register_response("goto")
+@register
+class GotoResponse(BaseSchema):
+    """
+    Response to `goto` request. This is just an acknowledgement, so no body field is required.
+
+    Note: automatically generated code. Do not edit manually.
+    """
+
+    __props__ = {
+        "seq": {
+            "type": "integer",
+            "description": "Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.",
+        },
+        "type": {"type": "string", "enum": ["response"]},
+        "request_seq": {"type": "integer", "description": "Sequence number of the corresponding request."},
+        "success": {
+            "type": "boolean",
+            "description": "Outcome of the request.\nIf True, the request was successful and the `body` attribute may contain the result of the request.\nIf the value is false, the attribute `message` contains the error in short form and the `body` may contain additional information (see `ErrorResponse.body.error`).",
+        },
+        "command": {"type": "string", "description": "The command requested."},
+        "message": {
+            "type": "string",
+            "description": "Contains the raw error in short form if `success` is false.\nThis raw error might be interpreted by the client and is not shown in the UI.\nSome predefined values exist.",
+            "_enum": ["cancelled", "notStopped"],
+            "enumDescriptions": ["the request was cancelled.", "the request may be retried once the adapter is in a 'stopped' state."],
+        },
+        "body": {
+            "type": ["array", "boolean", "integer", "null", "number", "object", "string"],
+            "description": "Contains request result if success is True and error details if success is false.",
+        },
+    }
+    __refs__ = set()
+
+    __slots__ = list(__props__.keys()) + ["kwargs"]
+
+    def __init__(self, request_seq, success, command, seq=-1, message=None, body=None, update_ids_from_dap=False, **kwargs):  # noqa (update_ids_from_dap may be unused)
+        """
+        :param string type:
+        :param integer request_seq: Sequence number of the corresponding request.
+        :param boolean success: Outcome of the request.
+        If true, the request was successful and the `body` attribute may contain the result of the request.
+        If the value is false, the attribute `message` contains the error in short form and the `body` may contain additional information (see `ErrorResponse.body.error`).
+        :param string command: The command requested.
+        :param integer seq: Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.
+        :param string message: Contains the raw error in short form if `success` is false.
+        This raw error might be interpreted by the client and is not shown in the UI.
+        Some predefined values exist.
+        :param ['array', 'boolean', 'integer', 'null', 'number', 'object', 'string'] body: Contains request result if success is true and error details if success is false.
+        """
+        self.type = "response"
+        self.request_seq = request_seq
+        self.success = success
+        self.command = command
+        self.seq = seq
+        self.message = message
+        self.body = body
+        self.kwargs = kwargs
+
+    def to_dict(self, update_ids_to_dap=False):  # noqa (update_ids_to_dap may be unused)
+        type = self.type  # noqa (assign to builtin)
+        request_seq = self.request_seq
+        success = self.success
+        command = self.command
+        seq = self.seq
+        message = self.message
+        body = self.body
+        dct = {
+            "type": type,
+            "request_seq": request_seq,
+            "success": success,
+            "command": command,
+            "seq": seq,
+        }
+        if message is not None:
+            dct["message"] = message
+        if body is not None:
+            dct["body"] = body
+        dct.update(self.kwargs)
+        return dct
+
+
+@register_request("pause")
+@register
+class PauseRequest(BaseSchema):
+    """
+    The request suspends the debuggee.
+
+    The debug adapter first sends the response and then a `stopped` event (with reason `pause`) after
+    the thread has been paused successfully.
+
+    Note: automatically generated code. Do not edit manually.
+    """
+
+    __props__ = {
+        "seq": {
+            "type": "integer",
+            "description": "Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.",
+        },
+        "type": {"type": "string", "enum": ["request"]},
+        "command": {"type": "string", "enum": ["pause"]},
+        "arguments": {"type": "PauseArguments"},
+    }
+    __refs__ = set(["arguments"])
+
+    __slots__ = list(__props__.keys()) + ["kwargs"]
+
+    def __init__(self, arguments, seq=-1, update_ids_from_dap=False, **kwargs):  # noqa (update_ids_from_dap may be unused)
+        """
+        :param string type:
+        :param string command:
+        :param PauseArguments arguments:
+        :param integer seq: Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.
+        """
+        self.type = "request"
+        self.command = "pause"
+        if arguments is None:
+            self.arguments = PauseArguments()
+        else:
+            self.arguments = (
+                PauseArguments(update_ids_from_dap=update_ids_from_dap, **arguments) if arguments.__class__ != PauseArguments else arguments
+            )
+        self.seq = seq
+        self.kwargs = kwargs
+
+    def to_dict(self, update_ids_to_dap=False):  # noqa (update_ids_to_dap may be unused)
+        type = self.type  # noqa (assign to builtin)
+        command = self.command
+        arguments = self.arguments
+        seq = self.seq
+        dct = {
+            "type": type,
+            "command": command,
+            "arguments": arguments.to_dict(update_ids_to_dap=update_ids_to_dap),
+            "seq": seq,
+        }
+        dct.update(self.kwargs)
+        return dct
+
+
+@register
+class PauseArguments(BaseSchema):
+    """
+    Arguments for `pause` request.
+
+    Note: automatically generated code. Do not edit manually.
+    """
+
+    __props__ = {"threadId": {"type": "integer", "description": "Pause execution for this thread."}}
+    __refs__ = set()
+
+    __slots__ = list(__props__.keys()) + ["kwargs"]
+
+    def __init__(self, threadId, update_ids_from_dap=False, **kwargs):  # noqa (update_ids_from_dap may be unused)
+        """
+        :param integer threadId: Pause execution for this thread.
+        """
+        self.threadId = threadId
+        if update_ids_from_dap:
+            self.threadId = self._translate_id_from_dap(self.threadId)
+        self.kwargs = kwargs
+
+    @classmethod
+    def update_dict_ids_from_dap(cls, dct):
+        if "threadId" in dct:
+            dct["threadId"] = cls._translate_id_from_dap(dct["threadId"])
+        return dct
+
+    def to_dict(self, update_ids_to_dap=False):  # noqa (update_ids_to_dap may be unused)
+        threadId = self.threadId
+        if update_ids_to_dap:
+            if threadId is not None:
+                threadId = self._translate_id_to_dap(threadId)
+        dct = {
+            "threadId": threadId,
+        }
+        dct.update(self.kwargs)
+        return dct
+
+    @classmethod
+    def update_dict_ids_to_dap(cls, dct):
+        if "threadId" in dct:
+            dct["threadId"] = cls._translate_id_to_dap(dct["threadId"])
+        return dct
+
+
+@register_response("pause")
+@register
+class PauseResponse(BaseSchema):
+    """
+    Response to `pause` request. This is just an acknowledgement, so no body field is required.
+
+    Note: automatically generated code. Do not edit manually.
+    """
+
+    __props__ = {
+        "seq": {
+            "type": "integer",
+            "description": "Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.",
+        },
+        "type": {"type": "string", "enum": ["response"]},
+        "request_seq": {"type": "integer", "description": "Sequence number of the corresponding request."},
+        "success": {
+            "type": "boolean",
+            "description": "Outcome of the request.\nIf True, the request was successful and the `body` attribute may contain the result of the request.\nIf the value is false, the attribute `message` contains the error in short form and the `body` may contain additional information (see `ErrorResponse.body.error`).",
+        },
+        "command": {"type": "string", "description": "The command requested."},
+        "message": {
+            "type": "string",
+            "description": "Contains the raw error in short form if `success` is false.\nThis raw error might be interpreted by the client and is not shown in the UI.\nSome predefined values exist.",
+            "_enum": ["cancelled", "notStopped"],
+            "enumDescriptions": ["the request was cancelled.", "the request may be retried once the adapter is in a 'stopped' state."],
+        },
+        "body": {
+            "type": ["array", "boolean", "integer", "null", "number", "object", "string"],
+            "description": "Contains request result if success is True and error details if success is false.",
+        },
+    }
+    __refs__ = set()
+
+    __slots__ = list(__props__.keys()) + ["kwargs"]
+
+    def __init__(self, request_seq, success, command, seq=-1, message=None, body=None, update_ids_from_dap=False, **kwargs):  # noqa (update_ids_from_dap may be unused)
+        """
+        :param string type:
+        :param integer request_seq: Sequence number of the corresponding request.
+        :param boolean success: Outcome of the request.
+        If true, the request was successful and the `body` attribute may contain the result of the request.
+        If the value is false, the attribute `message` contains the error in short form and the `body` may contain additional information (see `ErrorResponse.body.error`).
+        :param string command: The command requested.
+        :param integer seq: Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.
+        :param string message: Contains the raw error in short form if `success` is false.
+        This raw error might be interpreted by the client and is not shown in the UI.
+        Some predefined values exist.
+        :param ['array', 'boolean', 'integer', 'null', 'number', 'object', 'string'] body: Contains request result if success is true and error details if success is false.
+        """
+        self.type = "response"
+        self.request_seq = request_seq
+        self.success = success
+        self.command = command
+        self.seq = seq
+        self.message = message
+        self.body = body
+        self.kwargs = kwargs
+
+    def to_dict(self, update_ids_to_dap=False):  # noqa (update_ids_to_dap may be unused)
+        type = self.type  # noqa (assign to builtin)
+        request_seq = self.request_seq
+        success = self.success
+        command = self.command
+        seq = self.seq
+        message = self.message
+        body = self.body
+        dct = {
+            "type": type,
+            "request_seq": request_seq,
+            "success": success,
+            "command": command,
+            "seq": seq,
+        }
+        if message is not None:
+            dct["message"] = message
+        if body is not None:
+            dct["body"] = body
+        dct.update(self.kwargs)
+        return dct
+
+
+@register_request("stackTrace")
+@register
+class StackTraceRequest(BaseSchema):
+    """
+    The request returns a stacktrace from the current execution state of a given thread.
+
+    A client can request all stack frames by omitting the startFrame and levels arguments. For
+    performance-conscious clients and if the corresponding capability `supportsDelayedStackTraceLoading`
+    is true, stack frames can be retrieved in a piecemeal way with the `startFrame` and `levels`
+    arguments. The response of the `stackTrace` request may contain a `totalFrames` property that hints
+    at the total number of frames in the stack. If a client needs this total number upfront, it can
+    issue a request for a single (first) frame and depending on the value of `totalFrames` decide how to
+    proceed. In any case a client should be prepared to receive fewer frames than requested, which is an
+    indication that the end of the stack has been reached.
+
+    Note: automatically generated code. Do not edit manually.
+    """
+
+    __props__ = {
+        "seq": {
+            "type": "integer",
+            "description": "Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.",
+        },
+        "type": {"type": "string", "enum": ["request"]},
+        "command": {"type": "string", "enum": ["stackTrace"]},
+        "arguments": {"type": "StackTraceArguments"},
+    }
+    __refs__ = set(["arguments"])
+
+    __slots__ = list(__props__.keys()) + ["kwargs"]
+
+    def __init__(self, arguments, seq=-1, update_ids_from_dap=False, **kwargs):  # noqa (update_ids_from_dap may be unused)
+        """
+        :param string type:
+        :param string command:
+        :param StackTraceArguments arguments:
+        :param integer seq: Sequence number of the message (also known as message ID). The `seq` for the first message sent by a client or debug adapter is 1, and for each subsequent message is 1 greater than the previous message sent by that actor. `seq` can be used to order requests, responses, and events, and to associate requests with their corresponding responses. For protocol messages of type `request` the sequence number can be used to cancel the request.
+        """
+        self.type = "request"
+        self.command = "stackTrace"
+        if arguments is None:
+            self.arguments = StackTraceArguments()
+        else:
+            self.arguments = (
+                StackTraceArguments(update_ids_from_dap=update_ids_from_dap, **arguments)
+                if arguments.__class__ != StackTraceArguments
+                else arguments
+            )
+        self.seq = seq
+        self.kwargs = kwargs
+
+    def to_dict(self, update_ids_to_dap=False):  # noqa (update_ids_to_dap may be unused)
+        type = self.type  # noqa (assign to builtin)
+        command = self.command
+        arguments = self.arguments
+        seq = self.seq
+        dct = {
+            "type": type,
+            "command": command,
+            "arguments": arguments.to_dict(update_ids_to_dap=update_ids_to_dap),
+            "seq": seq,
+        }
+        dct.update(self.kwargs)
+        return dct
+
+
+@register
+class StackTraceArguments(BaseSchema):
+    """
+    Arguments for `stackTrace` request.
+
+    Note: automatically generated code. Do not edit manually.
+    """
+
+    __props__ = {
+        "threadId": {"type": "integer", "description": "Retrieve the stacktrace for this thread."},
+        "startFrame": {"type": "integer", "description": "The index of the first frame to return; if omitted frames start at 0."},
+        "levels": {
+            "type": "integer",
+            "description": "The maximum number of frames to return. If levels is not specified or 0, all frames are returned.",
+        },
+        "format": {
+            "description": "Specifies details on how to format the stack frames.\nThe attribute is only honored by a debug adapter if the corresponding capability `supportsValueFormattingOptions` is True.",
+            "type": "StackFrameFormat",
+        },
+    }
+    __refs__ = set(["format"])
+
+    __slots__ = list(__props__.keys()) + ["kwargs"]
+
+    def __init__(self, threadId, startFrame=None, levels=None, format=None, update_ids_from_dap=False, **kwargs):  # noqa (update_ids_from_dap may be unused)
+        """
+        :param integer threadId: Retrieve the stacktrace for this thread.
+        :param integer startFrame: The index of the first frame to return; if omitted frames start at 0.
+        :param integer levels: The maximum number of frames to return. If levels is not specified or 0, all frames are returned.
+        :param StackFrameFormat format: Specifies details on how to format the stack frames.
+        The attribute is only honored by a debug adapter if the corresponding capability `supportsValueFormattingOptions` is true.
+        """
+        self.threadId = threadId
+        self.startFrame = startFrame
+        self.levels = levels
+        if format is None:
+            self.format = StackFrameFormat()
+        else:
+            self.format = (
+                StackFrameFormat(update_ids_from_dap=update_ids_from_dap, **format) if format.__class__ != StackFrameFormat else format
+            )
+        if update_ids_from_dap:
+            self.threadId = self._translate_id_from_dap(self.threadId)
+        self.kwargs = kwargs
+
+    @classmethod
+    def update_dict_ids_from_dap(cls, dct):
+        if "threadId" in dct:
+            dct["threadId"] = cls._translate_id_from_dap(dct["threadId"])
+        return dct
+
+    def to_dict(self, update_ids_to_dap=False):  # noqa (update_ids_to_dap may be unused)
+        threadId = self.threadId
+        startFrame = self.startFrame
+        levels = self.levels
+        format = self.format  # noqa (assign to builtin)
+        if update_ids_to_dap:
+            if threadId is not None:
+                threadId = self._translate_id_to_dap(threadId)
+        dct = {
+            "threadId": threadId,
+        }
+        if startFrame is not None:
+            dct["startFrame"] = startFrame
+        if levels is not None:
+            dct["levels"] = levels
+        if format is not None:
+            dct["format"] = format.to_dict(update_ids_to_dap=update_ids_to_dap)
+        dct.update(self.kwargs)
+        return dct
+
+    @classmethod
+    def update_dict_ids_to_dap(cls, dct):
+        if "threadId" in dct:
+            dct["threadId"] = cls._translate_id_to_dap(dct["threadId"])
+        return dct
+
+
+@register_response("stackTrace")
+@register
+class StackTraceResponse(BaseSchema):
